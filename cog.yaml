@@ -1,9 +1,12 @@
 build:
   gpu: true
-  python_version: "3.10"
+  system_packages:
+    - ffmpeg
+  python_version: "3.11"
   python_packages:
-    - "torch==1.12.1"
-    - "transformers==4.40.2"
+    - "transformers"
+    - "torch"
     - "accelerate"
-
+    - datasets[audio]
+    - torchaudio
 predict: "predict.py:Predictor"
