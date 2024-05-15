@@ -89,6 +89,7 @@ class Predictor(BasePredictor):
             chunk_length_s=15 if long_form_transcription else 0,
             torch_dtype=torch.float16,
             device="cuda",
+            batchsize=batchsize,
         )
 
         result = pipe(str(audio))
