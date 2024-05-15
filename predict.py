@@ -32,21 +32,6 @@ class Predictor(BasePredictor):
             "distil-whisper/distil-large-v3", cache_dir=cache_dir, local_files_only=True
         )
 
-        self.model_en = AutoModelForSpeechSeq2Seq.from_pretrained(
-            "distil-whisper/distil-medium.en",
-            cache_dir=cache_dir,
-            local_files_only=True,
-            torch_dtype=torch.float16,
-            low_cpu_mem_usage=True,
-            use_safetensors=True,
-        )
-        self.model_en.to("cuda")
-        self.processor_en = AutoProcessor.from_pretrained(
-            "distil-whisper/distil-medium.en",
-            cache_dir=cache_dir,
-            local_files_only=True,
-        )
-
     def predict(
         self,
         audio: Path = Input(description="Input audio file"),
@@ -54,7 +39,6 @@ class Predictor(BasePredictor):
             description="Choose a model.",
             choices=[
                 "distil-whisper/distil-large-v3",
-                "distil-whisper/distil-medium.en",
             ],
             default="distil-whisper/distil-large-v3",
         ),
@@ -70,16 +54,8 @@ class Predictor(BasePredictor):
         ),
     ) -> str:
         """Run a single prediction on the model"""
-        model = (
-            self.model
-            if model_name == "distil-whisper/distil-large-v3"
-            else self.model_en
-        )
-        processor = (
-            self.processor
-            if model_name == "distil-whisper/distil-large-v3"
-            else self.processor_en
-        )
+        model = self.model
+        processor = self.processor
         pipe = pipeline(
             "automatic-speech-recognition",
             model=model,
